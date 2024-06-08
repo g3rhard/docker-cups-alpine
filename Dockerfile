@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1
-ARG ALPINE_VERSION="edge"
+# syntax=docker/dockerfile:1@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+ARG ALPINE_VERSION="edge@sha256:166710df254975d4a6c4c407c315951c22753dcaa829e020a3fd5d18fff70dd2"
 
 FROM alpine:${ALPINE_VERSION}
 
