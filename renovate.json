@@ -1,16 +1,26 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "configMigration": true,
   "extends": [
     ":pinDevDependencies",
     "config:recommended",
     "docker:pinDigests",
     "helpers:pinGitHubActionDigests"
   ],
+  "assignees": ["g3rhard"],
   "packageRules": [
     {
+      "groupName": "Docker images",
+      "groupSlug": "docker-images",
+      "matchDatasources": ["docker"],
+      "addLabels": ["docker"],
+      "description": "Update container images"
+    },
+    {
       "groupName": "GitHub Actions",
-      "matchManagers": ["github-actions"]
+      "groupSlug": "github-actions",
+      "matchDatasources": ["github-actions"],
+      "addLabels": ["github-actions"],
+      "description": "Update GitHub Actions"
     }
   ]
 }

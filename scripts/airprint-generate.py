@@ -22,30 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-import cups, os, optparse, re
-import urllib.parse as urlparse
 import os.path
-from io import StringIO
-
-from xml.dom.minidom import parseString
-from xml.dom import minidom
-
+import optparse
+import re
 import sys
+import urllib.parse as urlparse
+from io import StringIO
+from xml.dom import minidom
+from xml.dom.minidom import parseString
+from xml.etree.ElementTree import Element, ElementTree, tostring
 
-try:
-    import lxml.etree as etree
-    from lxml.etree import Element, ElementTree, tostring
-except:
-    try:
-        from xml.etree.ElementTree import Element, ElementTree, tostring
-        etree = None
-    except:
-        try:
-            from elementtree import Element, ElementTree, tostring
-            etree = None
-        except:
-            print('Failed to find python libxml or elementtree, please install one of those or use python >= 2.5')
-            raise
+import cups
 
 XML_TEMPLATE = """<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 <service-group>
@@ -77,7 +64,6 @@ DOCUMENT_TYPES = {
     'image/urf': True,
     'image/png': True,
     'image/tiff': True,
-    'image/png': True,
     'image/jpeg': True,
     'image/gif': True,
     'text/plain': True,
@@ -230,17 +216,12 @@ class AirPrintGenerate(object):
                 if self.directory:
                     fname = os.path.join(self.directory, fname)
 
-                f = open(fname, 'w')
-
-                if etree:
-                    tree.write(f, pretty_print=True, xml_declaration=True, encoding="UTF-8")
-                else:
+                with open(fname, 'w', encoding='utf-8') as service_file:
                     xmlstr = tostring(tree.getroot())
                     doc = parseString(xmlstr)
                     dt= minidom.getDOMImplementation('').createDocumentType('service-group', None, 'avahi-service.dtd')
                     doc.insertBefore(dt, doc.documentElement)
-                    doc.writexml(f)
-                f.close()
+                    doc.writexml(service_file, encoding='UTF-8')
 
                 if self.verbose:
                     sys.stderr.write('Created: %s%s' % (fname, os.linesep))
